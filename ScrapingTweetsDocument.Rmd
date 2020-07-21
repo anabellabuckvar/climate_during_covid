@@ -1,0 +1,42 @@
+---
+title: "TwitterScraping"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(stringr)
+library(twitteR)
+library(purrr)
+library(tidytext)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(scales)
+library(broom)
+library(ggplot2)
+
+consumerKey = "1kXvX61yIN4Tnu2YdmAKabJo7"
+consumerSecret = "872CdM7ruwMN034gw4J91JZ24QlD2AcFMxhfgJluXIWtp6YeVk"
+accessToken = "1001770335451017216-cl85nb6ZO5DP9nq51Ehxv52XS4qRoA"
+#unsure if access token is bearer token or access token along with the below. 
+accessSecret = "Ivls5LeRi75gcDr5TNoGixjIgs5NZE4Bbzvn3rfdN11Jr"
+options(httr_oauth_cache=TRUE)
+
+setup_twitter_oauth(consumer_key = consumerKey, consumer_secret = consumerSecret,
+access_token = accessToken, access_secret = accessSecret)
+
+```
+
+## R Markdown
+
+You can also embed plots, for example:
+
+```{r pullingthegoddamntweets, echo=FALSE}
+plot(pressure)
+
+
+
+```
+
