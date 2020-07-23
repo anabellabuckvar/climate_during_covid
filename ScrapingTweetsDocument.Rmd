@@ -34,9 +34,22 @@ access_token = accessToken, access_secret = accessSecret)
 You can also embed plots, for example:
 
 ```{r pullingthegoddamntweets, echo=FALSE}
-plot(pressure)
 
 
+yeswecan <- searchTwitter("#yeswecan exclude:retweets", n=3200)
+
+yeswecan_df <- tbl_df(map_df(yeswecan, as.data.frame))
+
+write.csv(yeswecan_df, "yeswecan.csv")
+
+
+###
+
+climate <- searchTwitter("#climate exclude:retweets", n=3200)
+
+climate_df <- tbl_df(map_df(climate, as.data.frame))
+
+write.csv(yeswecan_df, "climate.csv")
 
 ```
 
