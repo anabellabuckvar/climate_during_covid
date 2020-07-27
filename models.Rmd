@@ -8,26 +8,25 @@ knitr::opts_chunk$set(echo = TRUE)
 
 clim<- read.csv("YCOM_2019_Data.csv")
 clim
+us_cov<-read.csv("us_covid.csv")
 ```
 
 ```{r cars}
 library(tidyverse)
 
+library(dplyr)
+score_func<- function(region){
+  dat<-clim %>%
+    select(human,consensus,worried,futuregen,personal,harmUS) 
+  
+  rowSums(dat, na.rm = FALSE)
+}
 
-clim<- clim %>%
-  mutate(affirm_score= (happening+human+consensus+worried+futuregen+personal+harmUS)/7)
-clim
-
-
-out<-clim %>%
-  select(GeoName, affirm_score)
-
-out
-
-
-
-
+score_func("Alabama")
 
 ```
 
+```{r model}
+  transform(us_cov, score=score_func(sub_region_1))
 
+```
