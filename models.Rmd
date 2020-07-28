@@ -23,10 +23,25 @@ score_func<- function(region){
   rowSums(dat, na.rm = FALSE) / 6
 }
 
-score_func("Alabama")
 ```
 
 ```{r model}
-  transform(us_cov, score=score_func(sub_region_1))
+us_cov<- us_cov %>%
+  slice(-(1:158))%>%
+  mutate(score)
+ n<- dim(us_cov) 
+ us_cov[1,15]<- score_func(us_cov[1,4])
+
+state<-us_cov[9000,4]
+score_func(state)
+for (x in 10000){
+  state<-us_cov[x,4]
+  us_cov[x,15]<- score_func(state)
+}
+us_cov[2000, 15]
+us_cov %>%
+  slice(9000:10000)
+
+
 
 ```
