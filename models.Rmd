@@ -37,9 +37,10 @@ for(i in 1:51){
   state[i,77]<-s
 }
 
-state %>%
+scores <- state %>%
   select(State, score)
 
+new_state <- merge(state, scores, by="State")
 
 ```
 
@@ -62,11 +63,32 @@ us_covid %>%
   select(score)
 
 
-
-
 ```{r model}
 library(broom)
-modall <- lm(score ~ grocery_and_pharmacy_percent_change_from_baseline+retail_and_recreation_percent_change_from_baseline+ parks_percent_change_from_baseline+transit_stations_percent_change_from_baseline+grocery_and_pharmacy_percent_change_from_baseline*retail_and_recreation_percent_change_from_baseline+as.factor(stay_at_home_order), data = state)
+
+modall <- lm(score.y ~ grocery_and_pharmacy_percent_change_from_baseline + retail_and_recreation_percent_change_from_baseline + parks_percent_change_from_baseline +  transit_stations_percent_change_from_baseline + (grocery_and_pharmacy_percent_change_from_baseline * retail_and_recreation_percent_change_from_baseline) + workplaces_percent_change_from_baseline + residential_percent_change_from_baseline + status_of_reopening + stay_at_home_order + mandatory_quarantine_for_travelers + non_essential_business_closures + large_gatherings_ban + restaurant_limits + bar_closures + face_covering_requirement + primary_election_postponement + TotalPop, data = new_state)
+
+tidy(modall)
+```
+
+```{assumptions}
+modall_res <- augment(modall)
+
+ggplot(data = modall_res, mapping = aes(x = .std.resid)) + 
+  geom_histogram(binwidth = 1) + 
+  labs(x = "Residuals", y = "Count",
+       title = "Residuals are...")
+
+ggplot(data = modall_res, mapping = aes(x = .fitted, y = .std.resid)) + 
+  geom_point() + labs(x = "Fitted Values", y = "Residuals", 
+                      title = "Variance is...")
+```
+
+```{diagnosing collinearity}
+ols_vif_tol(modall)
+```
+
+```{other models}
 state1<- state%>%
   filter(stay_at_home_order!= "NA")
 
@@ -83,5 +105,5 @@ tidy(mod1)
 glance(mod1)
 tidy(mod3)
 glance(mod3)
-
 ```
+
