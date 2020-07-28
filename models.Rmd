@@ -17,13 +17,13 @@ library(tidyverse)
 library(dplyr)
 score_func<- function(region){
   dat<-clim %>%
+    filter(GeoName == region) %>%
     select(human,consensus,worried,futuregen,personal,harmUS) 
   
-  rowSums(dat, na.rm = FALSE)
+  rowSums(dat, na.rm = FALSE) / 6
 }
 
 score_func("Alabama")
-
 ```
 
 ```{r model}
