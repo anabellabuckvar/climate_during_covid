@@ -7,14 +7,17 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 
 clim<- read.csv("YCOM_2019_Data.csv")
-clim
 us_cov<-read.csv("us_covid.csv")
+state<- read.csv("state_data.csv")
 ```
 
-```{r cars}
-library(tidyverse)
+```{r climate_score}
 
+#library(tidyverse)
 library(dplyr)
+
+
+clim[10,3]<- "District Of Columbia"
 score_func<- function(region){
   dat<-clim %>%
     filter(GeoName == region) %>%
@@ -23,25 +26,62 @@ score_func<- function(region){
   rowSums(dat, na.rm = FALSE) / 6
 }
 
+state<- state %>%
+  mutate(score=0)
+
+  stat<-state[1,1]
+stat
+for(i in 1:51){
+  stat<-state[i,1]
+  s<-score_func(stat)
+  state[i,77]<-s
+}
+
+state %>%
+  select(State, score)
+
+
 ```
 
-```{r model}
-us_cov<- us_cov %>%
-  slice(-(1:158))%>%
+
+{r ignore this for now}
+us_covid<- us_cov %>%
+  slice(-(1:158)) %>%
   mutate(score)
- n<- dim(us_cov) 
- us_cov[1,15]<- score_func(us_cov[1,4])
 
-state<-us_cov[9000,4]
-score_func(state)
-for (x in 10000){
-  state<-us_cov[x,4]
-  us_cov[x,15]<- score_func(state)
+n<-dim(us_covid)
+n<-n/2
+n<-n/2
+for(i in 1:n){
+  stat<-toString(us_covid[i,4])
+    s<-score_func(stat)
+  us_covid[i,15]<-s
 }
-us_cov[2000, 15]
-us_cov %>%
-  slice(9000:10000)
+
+us_covid %>%
+  select(score)
 
 
+
+
+```{r model}
+library(broom)
+modall <- lm(score ~ grocery_and_pharmacy_percent_change_from_baseline+retail_and_recreation_percent_change_from_baseline+ parks_percent_change_from_baseline+transit_stations_percent_change_from_baseline+grocery_and_pharmacy_percent_change_from_baseline*retail_and_recreation_percent_change_from_baseline+as.factor(stay_at_home_order), data = state)
+state1<- state%>%
+  filter(stay_at_home_order!= "NA")
+
+###some possibly interesting individual predictors that appear significant
+mod1<- lm(score~ stay_at_home_order, data=state1)
+
+mod2 <- lm(score~ as.factor(mandatory_quarantine_for_travelers), data=state)
+
+mod3 <- lm(score~ as.factor(bar_closures), data=state)
+
+tidy(mod2)
+glance(mod2)
+tidy(mod1)
+glance(mod1)
+tidy(mod3)
+glance(mod3)
 
 ```
