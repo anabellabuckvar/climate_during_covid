@@ -237,4 +237,15 @@ ggplot(data = states) +
   theme_bw()
 
 ```
+```{r}
+usa <- map_data("usa")
+ggplot(data = state) + 
+   geom_sf(aes(fill =)) +
+  theme_bw()
+```
+```{r}
+library(ggeffects)
+lm_model <- lm(score.y ~ transit_stations_percent_change_from_baseline + bar_closures + retail_and_recreation_percent_change_from_baseline + parks_percent_change_from_baseline, na.action=na.omit, data = train.data)
+predict3d::ggPredict(lm_model)
+```
 
