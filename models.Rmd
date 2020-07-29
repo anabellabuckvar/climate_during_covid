@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(dplyr)
 library(broom)
+library(caret)
 
 clim <- read.csv("data/YCOM_2019_Data.csv")
 us_cov <- read.csv("us_covid.csv")
@@ -26,7 +27,7 @@ us_covid <- global_covid %>%
 write.csv(us_covid,'us_covid.csv')
 
 #climate data
-YCOM <- read.csv(file = 'YCOM_2019_Data.csv')
+YCOM <- read.csv(file = 'YCOM_2019_Metadata.csv')
 
 #social factors dataset
 social_distancing <- read.csv(file = 'data/State Social Distancing Actions.csv')
@@ -160,17 +161,25 @@ glance(mod3)
 ```{r visualizations}
 #sample visualizations
 library(ggplot2)
-library(ggmaps)
 library(maps)
 library(mapdata)
+library(tidyverse)
+library(sf)
+usa <- map_data("usa")
+
+
+#retail and recreation percent change in baseline
+
+ggplot(data = usa) +
+  geom_sf(aes(fill = group)) +
+  scale_fill_gradient(low = "#fee8c8", high ="#7f0000") +
+  theme_bw()
+
+
 usa <- map_data("usa")
 ggplot(data = states) + 
    geom_sf(aes(fill = )) +
   theme_bw()
-
-install.packages("ggmaps")
-install.packages("maps")
-install.packages("mapdata")
 
 ```
 
