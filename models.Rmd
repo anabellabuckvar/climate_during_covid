@@ -1,11 +1,11 @@
 ---
-title: "Linear Regression Model"
-output:
-  pdf_document: default
-  html_document: default
+title: "Stat 198 Project"
+author: "Anabella Buckvar, Chandler Naylon, William Reynolds, Natalie Wong"
+date: "Due: Wednesday, July 29, 2020 at 11:59p"
+output: pdf_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, echo = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
@@ -16,18 +16,17 @@ library(sf)
 ```
 
 
-```{r datasets, include=FALSE}
+```{r datasets, include=FALSE, echo = FALSE}
+#YCOM climate data
 clim <- read.csv("data/YCOM_2019_Data.csv")
-us_cov <- read.csv("us_covid.csv")
-state <- read.csv("data/state_data.csv")
 
 #modified Google dataset containing only US entries, no global
 global_covid <- read.csv(file = 'Global_Mobility_Report.csv')
 us_covid <- global_covid %>%
   filter(country_region_code == "US")
 
-#YCOM climate data
-YCOM <- read.csv(file = 'data/YCOM_2019_Metadata.csv')
+#combines YCOM climate data and COVID data from above datasets by state (combined in Excel)
+state <- read.csv("data/state_data.csv")
 
 #societal COVID predictors dataset
 social_distancing <- read.csv(file = 'data/State Social Distancing Actions.csv')
@@ -40,7 +39,7 @@ new_new_state <- read.csv('data/new_new_state.csv')
 ```
 
 
-```{r climate score}
+```{r climate score, echo = FALSE}
 clim[10,3]<- "District Of Columbia"
 score_func<- function(region){
   dat<-clim %>%
@@ -68,25 +67,7 @@ new_state <- merge(state, scores, by="State")
 ```
 
 
-{r ignore this for now}
-us_covid<- us_cov %>%
-  slice(-(1:158)) %>%
-  mutate(score)
-
-n<-dim(us_covid)
-n<-n/2
-n<-n/2
-for(i in 1:n){
-  stat<-toString(us_covid[i,4])
-    s<-score_func(stat)
-  us_covid[i,15]<-s
-}
-
-us_covid %>%
-  select(score)
-
-
-```{r model & predictive accuracy, message = F, warning = F}
+```{r model & predictive accuracy, message = F, warning = F, echo = FALSE}
 #create training and test sets
 set.seed(100)
 training.samples <- new_new_state$score.y %>%
@@ -94,18 +75,8 @@ training.samples <- new_new_state$score.y %>%
 train.data  <- new_new_state[training.samples, ]
 test.data <- new_new_state[-training.samples, ]
 
-#fit model to training set
-#for each model, take note of overall r^2, p-values of predictors, and VIF values of predictors
-#sensitivity analysis: get rid of high VIF predictors and see if that meaningfully affects results
-
-#final model
+#final model, fit to training set
 lm_model <- lm(score.y ~ transit_stations_percent_change_from_baseline + bar_closures + retail_and_recreation_percent_change_from_baseline + parks_percent_change_from_baseline, na.action=na.omit, data = train.data)
-
-#potentially important: transit_stations_percent_change_from_baseline, bar_closures, retail_and_recreation_percent_change_from_baseline
-
-#throw away: grocery_and_pharmacy_percent_change_from_baseline, workplaces_percent_change_from_baseline, status_of_reopening, residential_percent_change_from_baseline
-
-#maybe: parks_percent_change_from_baseline
 
 tidy(lm_model)
 
@@ -118,13 +89,13 @@ RMSE(predictions, test.data$score.y)
 ```
 
 
-```{r detect collinearity, message = F, warning = F}
+```{r detect collinearity, message = F, warning = F, echo = FALSE}
 #GVIF above ~6 should be removed from the model
 car::vif(lm_model)
 ```
 
 
-```{r linear assumptions, message = F, warning = F}
+```{r linear assumptions, message = F, warning = F, echo = FALSE}
 lm_model_res <- augment(lm_model)
 
 ggplot(data = lm_model_res, mapping = aes(x = .std.resid)) + 
@@ -138,28 +109,7 @@ ggplot(data = lm_model_res, mapping = aes(x = .fitted, y = .std.resid)) +
 ```
 
 
-```{r other models, message = F, warning = F}
-
-state1 <- state%>%
-  filter(stay_at_home_order!= "NA")
-
-#some possibly interesting individual predictors that appear significant
-mod1<- lm(score ~ stay_at_home_order, data=state1)
-
-mod2 <- lm(score ~ as.factor(mandatory_quarantine_for_travelers), data=state)
-
-mod3 <- lm(score ~ as.factor(bar_closures), data=state)
-
-tidy(mod2)
-glance(mod2)
-tidy(mod1)
-glance(mod1)
-tidy(mod3)
-glance(mod3)
-```
-
-
-```{r visualizations}
+```{r visualizations, echo = FALSE}
 #sample visualizations
 library(ggplot2)
 library(maps)
@@ -205,7 +155,7 @@ ggplot(data = usa) +
   geom_sf(aes(fill = group)) +
   scale_fill_gradient(low = "#fee8c8", high ="#7f0000") +
   theme_bw()
-```{r}
+```{r, echo = FALSE}
 library(usmap)
 library(ggplot2)
 state <- read.csv("data/state_data.csv")
@@ -214,7 +164,7 @@ plot_usmap(data = state, values = "bar_closures", color = "red") +
   theme(legend.position = "right")
 ```
   
-```{r}
+```{r, echo = FALSE}
 state <- read.csv("data/state_data.csv")
 usa <- map_data("usa")
 ggplot(data = state) + 
@@ -223,7 +173,7 @@ ggplot(data = state) +
 
 ```
 
-```{r}
+```{r, echo = FALSE}
 new_new_state <- read.csv('data/new_new_state.csv')
 var1 <- new_new_state %>% 
   select(retail_and_recreation_percent_change_from_baseline) %>%
@@ -237,13 +187,15 @@ ggplot(data = states) +
   theme_bw()
 
 ```
-```{r}
+
+```{r, echo = FALSE}
 usa <- map_data("usa")
 ggplot(data = state) + 
    geom_sf(aes(fill =)) +
   theme_bw()
 ```
-```{r}
+
+```{r, echo = FALSE}
 library(ggeffects)
 lm_model <- lm(score.y ~ transit_stations_percent_change_from_baseline + bar_closures + retail_and_recreation_percent_change_from_baseline + parks_percent_change_from_baseline, na.action=na.omit, data = train.data)
 predict3d::ggPredict(lm_model)
