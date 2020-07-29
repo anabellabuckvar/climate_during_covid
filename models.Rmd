@@ -1,5 +1,5 @@
 ---
-title: "Models"
+title: "Linear Regression Model"
 output:
   pdf_document: default
   html_document: default
@@ -12,35 +12,35 @@ library(tidyverse)
 library(dplyr)
 library(broom)
 library(caret)
-
-clim <- read.csv("data/YCOM_2019_Data.csv")
-us_cov <- read.csv("us_covid.csv")
-state <- read.csv("data/state_data.csv")
+library(sf)
 ```
 
 
 ```{r datasets, include=FALSE}
+clim <- read.csv("data/YCOM_2019_Data.csv")
+us_cov <- read.csv("us_covid.csv")
+state <- read.csv("data/state_data.csv")
+
 #modified Google dataset containing only US entries, no global
 global_covid <- read.csv(file = 'Global_Mobility_Report.csv')
 us_covid <- global_covid %>%
   filter(country_region_code == "US")
-write.csv(us_covid,'us_covid.csv')
 
-#climate data
-YCOM <- read.csv(file = 'YCOM_2019_Metadata.csv')
+#YCOM climate data
+YCOM <- read.csv(file = 'data/YCOM_2019_Metadata.csv')
 
-#social factors dataset
+#societal COVID predictors dataset
 social_distancing <- read.csv(file = 'data/State Social Distancing Actions.csv')
 
-#dataset combining climate variables, climate score, and COVID factors by state
-write.csv(new_state,'data/new_state.csv')
+#dataset combining climate variables, climate scores, and COVID factors by state
+new_state <- read.csv('data/new_state.csv')
 
 #new_state except with no NAs
 new_new_state <- read.csv('data/new_new_state.csv')
 ```
 
 
-```{r climate_score}
+```{r climate score}
 clim[10,3]<- "District Of Columbia"
 score_func<- function(region){
   dat<-clim %>%
@@ -95,9 +95,10 @@ train.data  <- new_new_state[training.samples, ]
 test.data <- new_new_state[-training.samples, ]
 
 #fit model to training set
-#model to play around with
 #for each model, take note of overall r^2, p-values of predictors, and VIF values of predictors
 #sensitivity analysis: get rid of high VIF predictors and see if that meaningfully affects results
+
+#final model
 lm_model <- lm(score.y ~ transit_stations_percent_change_from_baseline + bar_closures + retail_and_recreation_percent_change_from_baseline + parks_percent_change_from_baseline, na.action=na.omit, data = train.data)
 
 #potentially important: transit_stations_percent_change_from_baseline, bar_closures, retail_and_recreation_percent_change_from_baseline
@@ -112,33 +113,33 @@ summary(lm_model)
 
 predictions <- lm_model %>% predict(test.data)
 
-#Prediction error, RMSE
+#Prediction error: RMSE
 RMSE(predictions, test.data$score.y)
 ```
 
 
 ```{r detect collinearity, message = F, warning = F}
-#interaction terms will likely have high VIF, which is okay
-#GVIF above ~5 should be removed from the model
+#GVIF above ~6 should be removed from the model
 car::vif(lm_model)
 ```
 
 
-```{r assumptions, message = F, warning = F}
-modall_res <- augment(modall)
+```{r linear assumptions, message = F, warning = F}
+lm_model_res <- augment(lm_model)
 
-ggplot(data = modall_res, mapping = aes(x = .std.resid)) + 
+ggplot(data = lm_model_res, mapping = aes(x = .std.resid)) + 
   geom_histogram(binwidth = 1) + 
   labs(x = "Residuals", y = "Count",
-       title = "Residuals are Normally Distributed")
+       title = "Residuals are Roughly Normally Distributed")
 
-ggplot(data = modall_res, mapping = aes(x = .fitted, y = .std.resid)) + 
+ggplot(data = lm_model_res, mapping = aes(x = .fitted, y = .std.resid)) + 
   geom_point() + labs(x = "Fitted Values", y = "Residuals", 
                       title = "Variance Appears to be Homogenous")
 ```
 
 
 ```{r other models, message = F, warning = F}
+
 state1 <- state%>%
   filter(stay_at_home_order!= "NA")
 
@@ -167,8 +168,12 @@ library(tidyverse)
 library(sf)
 usa <- map_data("usa")
 
-
 #retail and recreation percent change in baseline
+
+ggplot(data = usa) +
+  geom_sf(color = "purple", fill = "lightblue") +
+  theme_bw()
+
 
 ggplot(data = usa) +
   geom_sf(aes(fill = group)) +
