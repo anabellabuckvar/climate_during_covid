@@ -12,9 +12,9 @@ library(tidyverse)
 library(dplyr)
 library(broom)
 
-clim <- read.csv("YCOM_2019_Data.csv")
+clim <- read.csv("data/YCOM_2019_Data.csv")
 us_cov <- read.csv("us_covid.csv")
-state <- read.csv("state_data.csv")
+state <- read.csv("data/state_data.csv")
 ```
 
 
@@ -29,13 +29,13 @@ write.csv(us_covid,'us_covid.csv')
 YCOM <- read.csv(file = 'YCOM_2019_Data.csv')
 
 #social factors dataset
-social_distancing <- read.csv(file = 'State Social Distancing Actions.csv')
+social_distancing <- read.csv(file = 'data/State Social Distancing Actions.csv')
 
 #dataset combining climate variables, climate score, and COVID factors by state
-write.csv(new_state,'new_state.csv')
+write.csv(new_state,'data/new_state.csv')
 
 #new_state except with no NAs
-new_new_state <- read.csv(file = 'new_new_state.csv')
+new_new_state <- read.csv('data/new_new_state.csv')
 ```
 
 
@@ -94,15 +94,16 @@ train.data  <- new_new_state[training.samples, ]
 test.data <- new_new_state[-training.samples, ]
 
 #fit model to training set
-#lm_model <- lm(score.y ~ grocery_and_pharmacy_percent_change_from_baseline + retail_and_recreation_percent_change_from_baseline + parks_percent_change_from_baseline +  transit_stations_percent_change_from_baseline + (grocery_and_pharmacy_percent_change_from_baseline * retail_and_recreation_percent_change_from_baseline) + workplaces_percent_change_from_baseline + residential_percent_change_from_baseline + status_of_reopening + bar_closures, na.action=na.omit, data = train.data)
-
 #model to play around with
 #for each model, take note of overall r^2, p-values of predictors, and VIF values of predictors
 #sensitivity analysis: get rid of high VIF predictors and see if that meaningfully affects results
-lm_model <- lm(score.y ~ transit_stations_percent_change_from_baseline + residential_percent_change_from_baseline + bar_closures, na.action=na.omit, data = train.data)
+lm_model <- lm(score.y ~ transit_stations_percent_change_from_baseline + bar_closures + retail_and_recreation_percent_change_from_baseline + parks_percent_change_from_baseline, na.action=na.omit, data = train.data)
 
-#potentially important variables
-#transit_stations_percent_change_from_baseline, residential_percent_change_from_baseline, bar_closures
+#potentially important: transit_stations_percent_change_from_baseline, bar_closures, retail_and_recreation_percent_change_from_baseline
+
+#throw away: grocery_and_pharmacy_percent_change_from_baseline, workplaces_percent_change_from_baseline, status_of_reopening, residential_percent_change_from_baseline
+
+#maybe: parks_percent_change_from_baseline
 
 tidy(lm_model)
 
@@ -112,8 +113,6 @@ predictions <- lm_model %>% predict(test.data)
 
 #Prediction error, RMSE
 RMSE(predictions, test.data$score.y)
-#R-square
-R2(predictions, test.data$score.y)
 ```
 
 
