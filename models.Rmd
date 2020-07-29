@@ -15,6 +15,7 @@ us_cov <- read.csv("us_covid.csv")
 state <- read.csv("state_data.csv")
 ```
 
+
 ```{r climate_score}
 clim[10,3]<- "District Of Columbia"
 score_func<- function(region){
@@ -70,7 +71,15 @@ train.data  <- new_new_state[training.samples, ]
 test.data <- new_new_state[-training.samples, ]
 
 #fit model to training set
-lm_model <- lm(score.y ~ grocery_and_pharmacy_percent_change_from_baseline + retail_and_recreation_percent_change_from_baseline + parks_percent_change_from_baseline +  transit_stations_percent_change_from_baseline + (grocery_and_pharmacy_percent_change_from_baseline * retail_and_recreation_percent_change_from_baseline) + workplaces_percent_change_from_baseline + residential_percent_change_from_baseline + status_of_reopening + bar_closures, na.action=na.omit, data = train.data)
+#lm_model <- lm(score.y ~ grocery_and_pharmacy_percent_change_from_baseline + retail_and_recreation_percent_change_from_baseline + parks_percent_change_from_baseline +  transit_stations_percent_change_from_baseline + (grocery_and_pharmacy_percent_change_from_baseline * retail_and_recreation_percent_change_from_baseline) + workplaces_percent_change_from_baseline + residential_percent_change_from_baseline + status_of_reopening + bar_closures, na.action=na.omit, data = train.data)
+
+#model to play around with
+#for each model, take note of overall r^2, p-values of predictors, and VIF values of predictors
+#sensitivity analysis: get rid of high VIF predictors and see if that meaningfully affects results
+lm_model <- lm(score.y ~ transit_stations_percent_change_from_baseline + residential_percent_change_from_baseline + bar_closures, na.action=na.omit, data = train.data)
+
+#potentially important variables
+#transit_stations_percent_change_from_baseline, residential_percent_change_from_baseline, bar_closures
 
 tidy(lm_model)
 
