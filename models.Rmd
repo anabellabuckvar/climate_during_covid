@@ -166,19 +166,66 @@ library(mapdata)
 library(tidyverse)
 library(sf)
 usa <- map_data("usa")
+state <- read.csv("data/state_data.csv")
+state <- state %>%
 
+mutate(bar_closures)
+
+
+state %>% 
+  filter(BIR74 > 10000) %>% 
+  select(NAME, BIR74) %>% 
+  st_drop_geometry()
+nc <- nc %>%
+  mutate(avesids79 = SID79 / BIR79)
+
+ggplot(nc) +
+  geom_sf(aes(fill = avesids79)) +
+  scale_fill_gradient(low = "#fee8c8", high ="#7f0000") +
+  theme_bw()
 
 #retail and recreation percent change in baseline
 
+
+usa <- map_data("usa")
+ggplot(data = state) + 
+   geom_sf(aes(fill = bar_closure)) +
+  theme_bw()
+
+```
 ggplot(data = usa) +
   geom_sf(aes(fill = group)) +
   scale_fill_gradient(low = "#fee8c8", high ="#7f0000") +
   theme_bw()
+```{r}
+library(usmap)
+library(ggplot2)
+state <- read.csv("data/state_data.csv")
+plot_usmap(data = state, values = "bar_closures", color = "red") + 
+  scale_fill_continuous(name = "Population (2015)", label = scales::comma) + 
+  theme(legend.position = "right")
+```
+  
+```{r}
+state <- read.csv("data/state_data.csv")
+usa <- map_data("usa")
+ggplot(data = state) + 
+   geom_sf(aes(fill = "bar_closure")) +
+  theme_bw()
 
+```
 
+```{r}
+new_new_state <- read.csv('data/new_new_state.csv')
+var1 <- new_new_state %>% 
+  select(retail_and_recreation_percent_change_from_baseline) %>%
+  pull() 
+
+states <- states %>%
+  mutate(rec = var1)
 usa <- map_data("usa")
 ggplot(data = states) + 
-   geom_sf(aes(fill = )) +
+   geom_sf(aes(fill = retail_recreation_percent_change_from_baseline)) +
   theme_bw()
 
 ```
