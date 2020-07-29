@@ -96,6 +96,13 @@ R2(predictions, test.data$score.y)
 ```
 
 
+```{r detect collinearity, message = F, warning = F}
+#interaction terms will likely have high VIF, which is okay
+#GVIF above ~5 should be removed from the model
+car::vif(lm_model)
+```
+
+
 ```{r assumptions, message = F, warning = F}
 modall_res <- augment(modall)
 
@@ -109,12 +116,6 @@ ggplot(data = modall_res, mapping = aes(x = .fitted, y = .std.resid)) +
                       title = "Variance Appears to be Homogenous")
 ```
 
-
-```{r detect collinearity, message = F, warning = F}
-#interaction terms will likely have high VIF, which is okay
-#GVIF above ~5 should be removed from the model
-car::vif(lm_model)
-```
 
 ```{r other models, message = F, warning = F}
 state1 <- state%>%
