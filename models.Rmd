@@ -1,6 +1,8 @@
 ---
 title: "Models"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -131,5 +133,23 @@ tidy(mod1)
 glance(mod1)
 tidy(mod3)
 glance(mod3)
+```
+
+
+```{r visualizations}
+#sample visualizations
+library(ggplot2)
+library(ggmaps)
+library(maps)
+library(mapdata)
+usa <- map_data("usa")
+ggplot(data = states) + 
+   geom_sf(aes(fill = )) +
+  theme_bw()
+
+install.packages("ggmaps")
+install.packages("maps")
+install.packages("mapdata")
+
 ```
 
