@@ -91,7 +91,7 @@ train.data  <- new_new_state[training.samples, ]
 test.data <- new_new_state[-training.samples, ]
 
 #fit model to training set
-lm_model <- lm(score.y ~ grocery_and_pharmacy_percent_change_from_baseline + retail_and_recreation_percent_change_from_baseline + parks_percent_change_from_baseline +  transit_stations_percent_change_from_baseline + (grocery_and_pharmacy_percent_change_from_baseline * retail_and_recreation_percent_change_from_baseline) + workplaces_percent_change_from_baseline + residential_percent_change_from_baseline + status_of_reopening + bar_closures + TotalPop, na.action=na.omit, data = train.data)
+lm_model <- lm(score.y ~ grocery_and_pharmacy_percent_change_from_baseline + retail_and_recreation_percent_change_from_baseline + parks_percent_change_from_baseline +  transit_stations_percent_change_from_baseline + (grocery_and_pharmacy_percent_change_from_baseline * retail_and_recreation_percent_change_from_baseline) + workplaces_percent_change_from_baseline + residential_percent_change_from_baseline + status_of_reopening + bar_closures, na.action=na.omit, data = train.data)
 
 predictions <- lm_model %>% predict(test.data)
 
