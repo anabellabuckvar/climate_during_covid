@@ -136,10 +136,10 @@ glance(mod3)
 ```
 
 
-```{r}
+```{r visualizations}
 #sample visualizations
 library(ggplot2)
-library(ggmap)
+library(ggmaps)
 library(maps)
 library(mapdata)
 usa <- map_data("usa")
@@ -147,6 +147,9 @@ ggplot(data = states) +
    geom_sf(aes(fill = )) +
   theme_bw()
 
+install.packages("ggmaps")
+install.packages("maps")
+install.packages("mapdata")
 
 ```
 
