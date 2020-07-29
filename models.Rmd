@@ -100,11 +100,11 @@ modall_res <- augment(modall)
 ggplot(data = modall_res, mapping = aes(x = .std.resid)) + 
   geom_histogram(binwidth = 1) + 
   labs(x = "Residuals", y = "Count",
-       title = "Residuals are...")
+       title = "Residuals are Normally Distributed")
 
 ggplot(data = modall_res, mapping = aes(x = .fitted, y = .std.resid)) + 
   geom_point() + labs(x = "Fitted Values", y = "Residuals", 
-                      title = "Variance is...")
+                      title = "Variance Appears to be Homogenous")
 ```
 
 
