@@ -123,6 +123,6 @@ plot_usmap(data = no_dc, values = "score.y", color = "black") +
 
 plot_usmap(data = no_dc, values = "transit_stations_percent_change_from_baseline", color = "black") + 
   scale_fill_continuous(
-    low = "white", high = "navy", name = "Climate Score", label = scales::comma
-  ) + theme(legend.position = "right") + labs(title = "Hawaii, Massachusetts, New York, and New Jersey Have the Largest Percent Decrease in Transit Station Traffic in the U.S.")
+    low = "white", high = "navy", name = "% Drop in Transit Station Traffic", label = scales::comma
+  ) + theme(legend.position = "right") + labs(title = "Hawaii, Massachusetts, New York, and New Jersey Have the Largest % Percent Drop in Transit Station Traffic in the U.S.")
 ```
