@@ -36,6 +36,9 @@ new_state <- read.csv('data/new_state.csv')
 
 #new_state except with no NAs
 new_new_state <- read.csv('data/new_new_state.csv')
+
+#new_new_state except with no District of Columbia (for visualization purposes, since usmap package does not include DC)
+no_dc <- read.csv("no_dc.csv")
 ```
 
 
@@ -108,3 +111,13 @@ ggplot(data = lm_model_res, mapping = aes(x = .fitted, y = .std.resid)) +
                       title = "Variance Appears to be Homogenous")
 ```
 
+
+```{r visualization, message = F, warning = F, echo = FALSE}
+library(usmap)
+library(ggplot2)
+
+plot_usmap(data = no_dc, values = "score.y", color = "black") + 
+  scale_fill_continuous(
+    low = "white", high = "green4", name = "Climate Score", label = scales::comma
+  ) + theme(legend.position = "right") + labs(title = "Hawaii, California, and New York Have the Highest Climate Scores in the U.S.")
+```

@@ -10,7 +10,9 @@ state: dataset combining Yale climate variables and COVID-19 factors, separated 
 
 new_state: modification of state; combines Yale climate variables used to create climate scores, climate scores themselves, and COVID-19 factors, all merged together by state
 
-new_new_state: modification of new_state; except with no missing values (removed any column/variable containing an NA; lost five variables)
+new_new_state: modification of new_state; contains no missing values (removed any column/variable containing an NA; lost five variables)
+
+no_dc: modification of new_new_state; removed District of Columbia (for visualization purposes, since usmap package does not include DC)
 
 
 
