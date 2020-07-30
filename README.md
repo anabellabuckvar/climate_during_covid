@@ -1,4 +1,4 @@
-DATASETS
+DATASETS...
 clim: Yale climate opinions dataset, separated by state (raw)
 
 social_distancing: state social distancing actions (raw)
@@ -16,7 +16,7 @@ no_dc: modification of new_new_state; removed District of Columbia (for visualiz
 
 
 
-VARIABLES USED TO CALCULATE CLIMATE SCORE (score.y)
+VARIABLES USED TO CALCULATE CLIMATE SCORE (score.y)...
 human: percentage of residents surveyed in the Yale Climate Change Project who think global warming is caused by human activity
 
 consensus: percentage of residents surveyed in the Yale Climate Change Project who believe that most scientists think global warming is happening
@@ -31,7 +31,7 @@ harmUS: percentage of residents surveyed in the Yale Climate Change Project who 
 
 
 
-VARIABLES IN LINEAR REGRESSION MODEL
+VARIABLES IN LINEAR REGRESSION MODEL...
 score.y: score calculated for each state based on its overall sentiment on climate change (incorporated variables from clim dataset)
 
 transit_stations_percent_change_from_baseline: a state’s average percent change in transit station visit time/frequency over the course of March 15 to July 23, compared to a pre-COVID baseline timeframe of January 3 to February 6
