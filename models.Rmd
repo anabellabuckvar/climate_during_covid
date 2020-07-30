@@ -196,4 +196,3 @@ Multicollinearity Essentials and Vif in r - Articles - Sthda. http://www.sthda.c
 
 “Yale Climate Opinion Maps 2019.” Yale Program on Climate Change Communication, https://climatecommunication.yale.edu/visualizations-data/ycom-us/. Accessed 30 July 2020.
 
-
