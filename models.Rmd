@@ -5,7 +5,7 @@ date: "Due: Wednesday, July 29, 2020 at 11:59p"
 output: pdf_document
 ---
 
-```{r setup, include=FALSE, echo = FALSE}
+```{r setup, include = FALSE, echo = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
@@ -16,7 +16,7 @@ library(sf)
 ```
 
 
-```{r datasets, include=FALSE, echo = FALSE}
+```{r datasets, include = FALSE, echo = FALSE}
 #YCOM climate data
 clim <- read.csv("data/YCOM_2019_Data.csv")
 
@@ -107,7 +107,4 @@ ggplot(data = lm_model_res, mapping = aes(x = .fitted, y = .std.resid)) +
   geom_point() + labs(x = "Fitted Values", y = "Residuals", 
                       title = "Variance Appears to be Homogenous")
 ```
-
-
-
 
