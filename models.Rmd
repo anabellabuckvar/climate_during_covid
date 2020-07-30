@@ -38,7 +38,7 @@ new_state <- read.csv('data/new_state.csv')
 new_new_state <- read.csv('data/new_new_state.csv')
 
 #new_new_state except with no District of Columbia (for visualization purposes, since usmap package does not include DC)
-no_dc <- read.csv("no_dc.csv")
+no_dc <- read.csv("data/no_dc.csv")
 ```
 
 
@@ -116,8 +116,13 @@ ggplot(data = lm_model_res, mapping = aes(x = .fitted, y = .std.resid)) +
 library(usmap)
 library(ggplot2)
 
-plot_usmap(data = no_dc, values = "score.y", color = "black") + 
+plot_usmap(data = no_dc, values = "score.y", color = "black") +
   scale_fill_continuous(
-    low = "white", high = "green4", name = "Climate Score", label = scales::comma
-  ) + theme(legend.position = "right") + labs(title = "Hawaii, California, and New York Have the Highest Climate Scores in the U.S.")
+    low = "darkseagreen1", high = "darkgreen", name = "Climate Score", label = scales::comma
+  ) + theme(legend.position = "right") + labs(title = "Hawaii, California, New York, and Massachusetts Have the Highest Climate Scores in the U.S.")
+
+plot_usmap(data = no_dc, values = "transit_stations_percent_change_from_baseline", color = "black") + 
+  scale_fill_continuous(
+    low = "white", high = "navy", name = "Climate Score", label = scales::comma
+  ) + theme(legend.position = "right") + labs(title = "Hawaii, Massachusetts, New York, and New Jersey Have the Largest Percent Decrease in Transit Station Traffic in the U.S.")
 ```
