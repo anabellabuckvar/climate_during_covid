@@ -1,11 +1,11 @@
 ---
-title: "STATISTIC 198 FINAL PROJECT SUMMER 2020: Investigating the Association Between COVID-19 Response and Climate Change Sentiment in the U.S."
+title: "STA 198 Final Project: Investigating the Association Between COVID-19 Response and Climate Change Sentiment in U.S. States"
 author: "Anabella Buckvar, Chandler Naylon, William Reynolds, Natalie Wong"
 date: "Due: Wednesday, July 29, 2020 at 11:59p"
 output: pdf_document
 ---
 
-###Introduction and Data
+## Introduction and Data
 In recent months, the world has been bombarded with a public health crisis from the COVID-19 pandemic. Although the reality and severity of the public health issue has been proven by scientists around the world, many Americans are still skeptical of whether or not COVID-19 is “real” and if it is truly something to be taken seriously. Similarly, climate change is another major crisis that our world is facing -- and like COVID-19, many are still doubtful of the reality of global warming despite it being proven and confirmed by scientists, time after time. Given the similar scientific backing behind both crises and the surprisingly widespread amounts of disbelief about both issues, especially among United States residents, our project group was curious to see if the two types of “denial” are associated in any way. Thus, our research question asks, is a state’s societal response to COVID-19 a strong indicator of its overall climate change sentiment?
 
 The general research question that we strove to answer is whether there is a relationship between COVID-19 denial and climate change denial. We felt that many people who do not believe in climate change or fail to recognize its severity have a distrust in science, and we thus also wondered if they would doubt the scientific validity of COVID-19. Specifically, is a state’s societal response to COVID-19 a strong indicator of its overall acceptance of the issue of human-caused climate change?
@@ -23,7 +23,7 @@ offers daily insight into how mobility in community spaces has changed during CO
 
 This dataset provided information on community mobility for many different countries, but we only used the data given for the United States in our project. This dataset included 6 variables, all of which we used in our model. These included Retail_and_recreation_percent_change_from_baseline, grocery_and_pharmacy_percent_change_from_baseline, Parks_percent_change_from_baseline, Transit_stations_percent_change_from_baseline, Workplaces_percent_change_from_baseline, Residential_percent_change_from_baseline, which measured the percentage amount of change in mobility in the retail and recreational locations, grocery stores and pharmacies, public parks, public transit stations, workplaces, and residential areas respectively before and during COVID-19.
 
-```{r setup, echo = FALSE}
+```{r setup, include = FALSE, echo = FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
 library(tidyverse)
@@ -35,7 +35,7 @@ library(usmap)
 library(ggplot2)
 ```
 
-```{r datasets, echo = FALSE}
+```{r datasets, include = FALSE, echo = FALSE}
 #YCOM climate data
 clim <- read.csv("data/YCOM_2019_Data.csv")
 
@@ -60,7 +60,7 @@ new_new_state <- read.csv('data/new_new_state.csv')
 no_dc <- read.csv("data/no_dc.csv")
 ```
 
-###Methodology
+## Methodology
 After formulating our research question, we outlined the procedure that we would use to address it. Essentially, we procured relevant information from each COVID-19 related data set and merged it into a single data frame, and then modeled these COVID-19 variables into a multiple linear regression that would output a climate score created by a function that combined the various climate change variables we used. This climate score was a response variable used to predict outcomes later in our research. These steps are outlined below. 
  
 First, we did a good deal of data wrangling to procure the necessary and relevant information from our datasets. We first modified the Google COVID-19 Community Mobility Report to only show data for the United States, since it contained data for countries around the world. Then, we selected data points that corresponded to entries from March 15 to July 23rd, which was a time frame that we felt corresponded to the United States time frame of the COVID-19 crisis. Next, we took the mean value of each predictor per state within that time frame. We then merged this dataset with the KFF State Social Distancing Actions dataset and the Yale Public Opinion Estimates on Climate Change dataset, leaving us with a consolidated csv to model with. This was all done in Excel using the VLOOKUP function, then uploaded to RStudio. These variables would serve as the input predictors in the linear regression model. 
@@ -73,6 +73,7 @@ We then created a multiple linear regression model in R. This regression took th
  
 Next, we set seed using the randomly generated value of 100 so that all of our data and figures would be reproducible. We then created a training set with 80% of the data, as well as a test set containing 20% of the data. This ultimately allowed us to fit a linear model that predicted the climate score based on the COVID-19 predictors.
 
+# Summary of Climate Scores
 ```{r climate score, echo = FALSE}
 clim[10,3]<- "District Of Columbia"
 score_func<- function(region){
@@ -101,7 +102,7 @@ new_state <- merge(state, scores, by="State")
 summary(scores)
 ```
 
-###Our Results
+## Our Results
 In order to answer our research question about if a state’s societal response to COVID-19 was associated with residents’ opinions on climate change, we utilized a multiple linear regression to test the relationship between a state’s climate change score and numerous predictors that measure its societal response to COVID-19.
  
 To determine the appropriateness of this model, we verified all assumptions for the linear regression model. We created a residual plot that showed that both the assumptions for equal variances and linearity were met, since the residuals were fairly symmetric about the x-axis and showed no clear pattern. A histogram of residuals was also created and demonstrated that the Normality assumption was also met, since the histogram was fairly Normally distributed. Although the histogram was slightly left-skewed, overall, we deemed that it was Normally distributed enough to meet the Normality assumption. 
@@ -118,6 +119,7 @@ We then ran the model again after removing these highly collinear variables. We 
 
 We deemed this to be a comprehensive and effective multiple linear regression model to measure the association between climate change denial and COVID-19 denial. 
 
+# Summary of Linear Regression Model
 ```{r model & predictive accuracy, message = F, warning = F, echo = FALSE}
 #create training and test sets
 set.seed(100)
@@ -139,12 +141,13 @@ predictions <- lm_model %>% predict(test.data)
 RMSE(predictions, test.data$score.y)
 ```
 
+# Detecting Collinearity with VIF
 ```{r detect collinearity, message = F, warning = F, echo = FALSE}
 #GVIF above ~6 should be removed from the model
 car::vif(lm_model)
 ```
 
-
+# Checking Linear Regression Assumptions
 ```{r linear assumptions, message = F, warning = F, echo = FALSE}
 lm_model_res <- augment(lm_model)
 
@@ -158,7 +161,7 @@ ggplot(data = lm_model_res, mapping = aes(x = .fitted, y = .std.resid)) +
                       title = "Variance Appears to be Homogenous")
 ```
 
-###Discussion
+## Discussion
 After conducting our project procedures, we saw that our model was indeed effective in conducting such analysis, as we had a final R^2 value of 0.845, which we found to be fairly high and indicated that there is indeed a relationship between a state’s COVID-19 societal response and their beliefs in climate change. The model also yielded a p-value of 3.57e-13, which showed that at least one of the predictors was significant, or not equal to 0. This is affirmed by the fact that we had 3 significant predictors in our model, which included transit_stations_percent_change_from_baseline (p-value=0.000457),  bar_closuresNewlyClosed (p-value=0.0343), and retail_and_recreation_percent_change_from_baseline (p-value=0.0123). These 3 predictors also showed acceptable VIF levels for collinearity, including 5.103, 1.500, and 5.340 respectively. 
  
 Although we are ultimately satisfied with the efficacy and output of our model, we also recognize that there is also room for improvement! Some of the possible weaknesses of our model are described and explained below. 
@@ -175,6 +178,7 @@ If we were to or able to start the project over, we would ideally use climate ch
  
 Furthermore, if we were to continue working on this project, it would be interesting to investigate the effects of more predictors. For example, we were curious about the correlation between states who mandated mask wearing and how those states’ residents perceived climate change, but there was not enough data to make meaningful inference about such a relationship. If we were to continue this project further into the year when there would be more available data about such predictors, we would most definitely include those into our model to investigate their effects on climate change perception. 
 
+# Mapping Our Response Variable and Our Most Significant Predictor
 ```{r visualization, message = F, warning = F, echo = FALSE}
 plot_usmap(data = no_dc, values = "score.y", color = "black") +
   scale_fill_continuous(
@@ -187,7 +191,7 @@ plot_usmap(data = no_dc, values = "transit_stations_percent_change_from_baseline
   ) + theme(legend.position = "right") + labs(title = "Hawaii, Massachusetts, New York, and New Jersey Have the Largest % Percent Drop in Transit Station Traffic in the U.S.")
 ```
 
-###Works Cited
+## Works Cited
 “COVID-19 Community Mobility Report.” COVID-19 Community Mobility Report, https://www.google.com/covid19/mobility?hl=en. Accessed 30 July 2020.
 
 Jul 29, Published:, and 2020. “State Data and Policy Actions to Address Coronavirus.” KFF, 29 July 2020, https://www.kff.org/coronavirus-covid-19/issue-brief/state-data-and-policy-actions-to-address-coronavirus/.
